@@ -44,10 +44,10 @@ namespace APM_PiKPO.DAL
         }
 
         [DisplayName("ID")]
-        [Browsable(false)]
+        //[Browsable(false)]
         public int Id { get; set; }
         [DisplayName("Название услуги")]
-        public string Name { get; set; }
+        public string ServiceName { get; set; }
         [DisplayName("Описание")]
         public string Description { get; set; }
         [DisplayName("Цена")]

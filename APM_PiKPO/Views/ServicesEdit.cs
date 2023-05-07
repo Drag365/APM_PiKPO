@@ -22,7 +22,7 @@ namespace APM_PiKPO.TablesEditors
             if (service != null)
             {
                 txtName.DataBindings.Clear();
-                txtName.DataBindings.Add("Text", service, "Name");
+                txtName.DataBindings.Add("Text", service, "ServiceName");
                 txtDescription.DataBindings.Clear();
                 txtDescription.DataBindings.Add("Text", service, "Description");
                 numPrice.DataBindings.Clear();

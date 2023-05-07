@@ -40,18 +40,25 @@ namespace APM_PiKPO
         }
 
         [DisplayName("ID")]
-        [Browsable(false)]
-        public int Id { get; set; }
-        [DisplayName("Имя")]
-        public string Name { get; set; }
+        public int ID { get; set; }
+        
         [DisplayName("Фамилия")]
         public string Surname { get; set; }
+        [DisplayName("Имя")]
+        public string FirstName { get; set; }
+
+        [DisplayName("Полное имя")]
+        public string FullName
+        {
+            get { return string.Format("{1} {0}", FirstName, Surname); }
+        }
+
         [DisplayName("Номер телефона")]
         public string PhoneNumber { get; set; }
         [DisplayName("Электронная почта")]
         public string Mail { get; set; }
         [DisplayName("Дата создания")]
-        public DateTime Date { get; set; }
+        public DateTime ProfileCreateDate { get; set; }
 
     }
 }

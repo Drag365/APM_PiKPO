@@ -21,7 +21,7 @@ namespace APM_PiKPO
             if (client != null)
             {
                 txtName.DataBindings.Clear();
-                txtName.DataBindings.Add("Text", client, "Name");
+                txtName.DataBindings.Add("Text", client, "FirstName");
                 txtSecondName.DataBindings.Clear();
                 txtSecondName.DataBindings.Add("Text", client, "Surname");
                 txtPhoneNumber.DataBindings.Clear();
@@ -29,7 +29,7 @@ namespace APM_PiKPO
                 txtMail.DataBindings.Clear();
                 txtMail.DataBindings.Add("Text", client, "Mail");
                 datePicker.DataBindings.Clear();
-                datePicker.DataBindings.Add("Value", client, "Date");
+                datePicker.DataBindings.Add("Value", client, "ProfileCreateDate");
             }
         }
 

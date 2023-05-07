@@ -1,4 +1,6 @@
-﻿namespace APM_PiKPO
+﻿using APM_PiKPO.DAL;
+
+namespace APM_PiKPO
 {
     partial class PhotoCenterForm
     {
@@ -46,12 +48,19 @@
             this.btnDelOrder = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.bsUser = new System.Windows.Forms.BindingSource(this.components);
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.btnSortClientsByDate = new System.Windows.Forms.Button();
+            this.btnClientsSortByName = new System.Windows.Forms.Button();
+            this.btnSortByStatus = new System.Windows.Forms.Button();
+            this.btnSortByDate = new System.Windows.Forms.Button();
+            this.btnSortByClients = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnServices = new System.Windows.Forms.RadioButton();
             this.btnOrders = new System.Windows.Forms.RadioButton();
             this.btnClients = new System.Windows.Forms.RadioButton();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.clientsEdit1 = new APM_PiKPO.ClientsEdit();
             this.ordersEdit1 = new APM_PiKPO.OrdersEdit();
             this.sevicesEdit1 = new APM_PiKPO.TablesEditors.ServicesEdit();
@@ -62,8 +71,10 @@
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsUser)).BeginInit();
-            this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -71,10 +82,11 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel5, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
@@ -257,6 +269,105 @@
             this.dataGridView1.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dataGridView1_DataBindingComplete);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.panel6);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(381, 508);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(623, 46);
+            this.panel5.TabIndex = 5;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.btnSortClientsByDate);
+            this.panel6.Controls.Add(this.btnClientsSortByName);
+            this.panel6.Controls.Add(this.btnSortByStatus);
+            this.panel6.Controls.Add(this.btnSortByDate);
+            this.panel6.Controls.Add(this.btnSortByClients);
+            this.panel6.Controls.Add(this.btnRefresh);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(623, 46);
+            this.panel6.TabIndex = 0;
+            // 
+            // btnSortClientsByDate
+            // 
+            this.btnSortClientsByDate.Location = new System.Drawing.Point(306, 0);
+            this.btnSortClientsByDate.Name = "btnSortClientsByDate";
+            this.btnSortClientsByDate.Size = new System.Drawing.Size(159, 46);
+            this.btnSortClientsByDate.TabIndex = 7;
+            this.btnSortClientsByDate.Text = "Отсортировать по дате";
+            this.btnSortClientsByDate.UseVisualStyleBackColor = true;
+            this.btnSortClientsByDate.Click += new System.EventHandler(this.btnSortByDate_Click);
+            // 
+            // btnClientsSortByName
+            // 
+            this.btnClientsSortByName.Location = new System.Drawing.Point(147, 0);
+            this.btnClientsSortByName.Name = "btnClientsSortByName";
+            this.btnClientsSortByName.Size = new System.Drawing.Size(159, 46);
+            this.btnClientsSortByName.TabIndex = 6;
+            this.btnClientsSortByName.Text = "Отсортировать по Фамилии и Имени";
+            this.btnClientsSortByName.UseVisualStyleBackColor = true;
+            this.btnClientsSortByName.Click += new System.EventHandler(this.btnSortByClients_Click);
+            // 
+            // btnSortByStatus
+            // 
+            this.btnSortByStatus.Location = new System.Drawing.Point(465, 0);
+            this.btnSortByStatus.Name = "btnSortByStatus";
+            this.btnSortByStatus.Size = new System.Drawing.Size(159, 46);
+            this.btnSortByStatus.TabIndex = 5;
+            this.btnSortByStatus.Text = "Отсортировать по статусу";
+            this.btnSortByStatus.UseVisualStyleBackColor = true;
+            this.btnSortByStatus.Visible = false;
+            this.btnSortByStatus.Click += new System.EventHandler(this.btnSortByStatus_Click);
+            // 
+            // btnSortByDate
+            // 
+            this.btnSortByDate.Location = new System.Drawing.Point(306, 0);
+            this.btnSortByDate.Name = "btnSortByDate";
+            this.btnSortByDate.Size = new System.Drawing.Size(159, 46);
+            this.btnSortByDate.TabIndex = 4;
+            this.btnSortByDate.Text = "Отсортировать по дате";
+            this.btnSortByDate.UseVisualStyleBackColor = true;
+            this.btnSortByDate.Visible = false;
+            this.btnSortByDate.Click += new System.EventHandler(this.btnSortByDate_Click);
+            // 
+            // btnSortByClients
+            // 
+            this.btnSortByClients.Location = new System.Drawing.Point(147, 0);
+            this.btnSortByClients.Name = "btnSortByClients";
+            this.btnSortByClients.Size = new System.Drawing.Size(159, 46);
+            this.btnSortByClients.TabIndex = 3;
+            this.btnSortByClients.Text = "Отсортировать по клиентам";
+            this.btnSortByClients.UseVisualStyleBackColor = true;
+            this.btnSortByClients.Visible = false;
+            this.btnSortByClients.Click += new System.EventHandler(this.btnSortByClients_Click);
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(0, 0);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(147, 46);
+            this.btnRefresh.TabIndex = 2;
+            this.btnRefresh.Text = "Обновить таблицу";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 1;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this.panel1, 0, 0);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 2;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60.12024F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 39.87976F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(372, 499);
+            this.tableLayoutPanel3.TabIndex = 6;
+            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -266,69 +377,45 @@
             this.panel1.Controls.Add(this.clientsEdit1);
             this.panel1.Controls.Add(this.ordersEdit1);
             this.panel1.Controls.Add(this.sevicesEdit1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(372, 499);
-            this.panel1.TabIndex = 4;
+            this.panel1.Size = new System.Drawing.Size(366, 294);
+            this.panel1.TabIndex = 5;
             // 
             // btnServices
             // 
             this.btnServices.AutoSize = true;
             this.btnServices.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnServices.Location = new System.Drawing.Point(290, 415);
+            this.btnServices.Location = new System.Drawing.Point(294, 261);
             this.btnServices.Name = "btnServices";
             this.btnServices.Size = new System.Drawing.Size(71, 23);
             this.btnServices.TabIndex = 9;
             this.btnServices.Text = "Услуги";
             this.btnServices.UseVisualStyleBackColor = true;
-            this.btnServices.CheckedChanged += new System.EventHandler(this.btnServices_CheckedChanged);
             // 
             // btnOrders
             // 
             this.btnOrders.AutoSize = true;
             this.btnOrders.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOrders.Location = new System.Drawing.Point(143, 415);
+            this.btnOrders.Location = new System.Drawing.Point(147, 261);
             this.btnOrders.Name = "btnOrders";
             this.btnOrders.Size = new System.Drawing.Size(76, 23);
             this.btnOrders.TabIndex = 8;
             this.btnOrders.Text = "Заказы";
             this.btnOrders.UseVisualStyleBackColor = true;
-            this.btnOrders.Click += new System.EventHandler(this.btnOrders_Click);
             // 
             // btnClients
             // 
             this.btnClients.AutoSize = true;
             this.btnClients.Checked = true;
             this.btnClients.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClients.Location = new System.Drawing.Point(9, 415);
+            this.btnClients.Location = new System.Drawing.Point(13, 261);
             this.btnClients.Name = "btnClients";
             this.btnClients.Size = new System.Drawing.Size(85, 23);
             this.btnClients.TabIndex = 7;
             this.btnClients.TabStop = true;
             this.btnClients.Text = "Клиенты";
             this.btnClients.UseVisualStyleBackColor = true;
-            this.btnClients.Click += new System.EventHandler(this.btnClients_Click);
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.btnRefresh);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(381, 508);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(623, 46);
-            this.panel5.TabIndex = 5;
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnRefresh.Location = new System.Drawing.Point(0, 0);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(623, 46);
-            this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.Text = "Обновить таблицу";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // clientsEdit1
             // 
@@ -337,7 +424,7 @@
             this.clientsEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.clientsEdit1.Location = new System.Drawing.Point(0, 0);
             this.clientsEdit1.Name = "clientsEdit1";
-            this.clientsEdit1.Size = new System.Drawing.Size(372, 499);
+            this.clientsEdit1.Size = new System.Drawing.Size(366, 294);
             this.clientsEdit1.TabIndex = 5;
             // 
             // ordersEdit1
@@ -373,9 +460,11 @@
             this.panel4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsUser)).EndInit();
+            this.panel5.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -389,13 +478,6 @@
         private System.Windows.Forms.Button btnDelClient;
         private System.Windows.Forms.Button btnSaveClient;
         private System.Windows.Forms.Button btnAddClient;
-        private System.Windows.Forms.Panel panel1;
-        private ClientsEdit clientsEdit1;
-        private OrdersEdit ordersEdit1;
-        private System.Windows.Forms.RadioButton btnServices;
-        private System.Windows.Forms.RadioButton btnOrders;
-        private System.Windows.Forms.RadioButton btnClients;
-        private TablesEditors.ServicesEdit sevicesEdit1;
         private System.Windows.Forms.Button btnAddOrder;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnAddService;
@@ -407,6 +489,20 @@
         private System.Windows.Forms.Button btnDelOrder;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Button btnSortByClients;
+        private System.Windows.Forms.Button btnSortByStatus;
+        private System.Windows.Forms.Button btnSortByDate;
+        private System.Windows.Forms.Button btnClientsSortByName;
+        private System.Windows.Forms.Button btnSortClientsByDate;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton btnServices;
+        private System.Windows.Forms.RadioButton btnOrders;
+        private System.Windows.Forms.RadioButton btnClients;
+        private ClientsEdit clientsEdit1;
+        private OrdersEdit ordersEdit1;
+        private TablesEditors.ServicesEdit sevicesEdit1;
     }
 }
 

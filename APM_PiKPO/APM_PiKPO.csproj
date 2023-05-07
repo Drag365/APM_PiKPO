@@ -67,6 +67,8 @@
   <ItemGroup>
     <Compile Include="Models\Orders.cs" />
     <Compile Include="Models\Services.cs" />
+    <Compile Include="Сontroller\ClientSorterImpl.cs" />
+    <Compile Include="Сontroller\ICLientSorter.cs" />
     <Compile Include="Сontroller\IRepositoryTables.cs" />
     <Compile Include="Сontroller\RepositoryTablesImpl.cs" />
     <Compile Include="Models\Clients.cs" />

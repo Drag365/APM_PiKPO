@@ -10,38 +10,38 @@ namespace APM_PiKPO.Repository
 {
     public abstract class IRepositoryTables
     {
-        public abstract List<Clients> GetClients();
+        public abstract List<Clients> getClients();
 
-        public abstract List<Orders> GetOrders();
-
-
-        public abstract List<Services> GetServices();
+        public abstract List<Orders> getOrders();
 
 
-        public abstract bool AddClient(Clients client);
+        public abstract List<Services> getServices();
 
 
-        public abstract bool AddOrder(Orders order);
+        public abstract bool addClient(Clients client);
 
 
-        public abstract bool AddService(Services service);
+        public abstract bool addOrder(Orders order);
 
 
-        public abstract bool DeleteClient(int id);
+        public abstract bool addService(Services service);
 
 
-        public abstract bool DeleteOrder(int id);
+        public abstract bool deleteClient(int id);
 
 
-        public abstract bool DeleteService(int id);
+        public abstract bool deleteOrder(int id);
 
 
-        public abstract bool SaveClient(Clients client);
+        public abstract bool deleteService(int id);
 
 
-        public abstract bool SaveOrder(Orders order);
+        public abstract bool saveClient(Clients client);
 
 
-        public abstract bool SaveService(Services service);
+        public abstract bool saveOrder(Orders order);
+
+
+        public abstract bool saveService(Services service);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using APM_PiKPO.DAL;
 using APM_PiKPO.Repository;
+using APM_PiKPO.Сontroller;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,8 +21,10 @@ namespace APM_PiKPO
         private List<Orders> _ordersList;
         private List<Services> _servicesList;
         RepositoryTablesImpl repository;
+        ClientSorterImpl clientSorter;
         private bool _newRow;
         private string who;
+        string sorting = "No";
 
         public PhotoCenterForm()
         {
@@ -31,9 +34,10 @@ namespace APM_PiKPO
             _ordersList = new List<Orders>();
             _servicesList = new List<Services>();
             repository = new RepositoryTablesImpl();
+            clientSorter = new ClientSorterImpl();
             bsUser.DataSource = _clientsList;
             dataGridView1.AutoGenerateColumns = true;
-            clientsEdit1.Client = new Clients { Date = DateTime.Now.Date };
+            clientsEdit1.Client = new Clients { ProfileCreateDate = DateTime.Now.Date };
             refreshTable();
         }
 
@@ -43,21 +47,45 @@ namespace APM_PiKPO
         }
 
         private void refreshTable()
-        {     
+        {
+            
             if (who == "Clients")
             {
                 _clientsList.Clear();
                 bsUser.DataSource = _clientsList;
-                List<Clients> list = repository.GetClients();
-                _clientsList.AddRange(list);
+                List<Clients> list;
+                if (sorting == "No")
+                {
+                    list = repository.getClients();
+                    _clientsList.AddRange(list);
+                }
+                else
+                {
+                    var sortingFunction = clientSorter._clientsSortingFunctions[sorting];
+                    list = sortingFunction();
+                    _clientsList.AddRange(list);
+                }
                 bsUser.ResetBindings(false);
+                
+
             }
             else if (who == "Orders")
             {
                 _ordersList.Clear();
                 bsUser.DataSource = _ordersList;
-                List<Orders> list = repository.GetOrders();
-                _ordersList.AddRange(list);
+                List<Orders> list;
+                if (sorting == "No")
+                {
+                    list = repository.getOrders();
+                    _ordersList.AddRange(list);
+                }
+                else
+                {
+                    var sortingFunction = clientSorter._ordersSortingFunctions[sorting];
+                    list = sortingFunction();
+                    _ordersList.AddRange(list);
+                }
+
                 bsUser.ResetBindings(false);
             }
 
@@ -65,11 +93,10 @@ namespace APM_PiKPO
             {
                 _servicesList.Clear();
                 bsUser.DataSource = _servicesList;
-                List<Services> list = repository.GetServices();
+                List<Services> list = repository.getServices();
                 _servicesList.AddRange(list);
                 bsUser.ResetBindings(false);
             }
-
 
         }
 
@@ -79,22 +106,41 @@ namespace APM_PiKPO
             {
                 var client = (Clients)bsUser.Current;
                 clientsEdit1.Client = client;
+                if (dataGridView1.Columns.Contains("ID"))
+                {
+                    dataGridView1.Columns["ID"].Visible = false;
+                }
+                if (dataGridView1.Columns.Contains("FullName"))
+                {
+                    dataGridView1.Columns["FullName"].Visible = false;
+                }
+                
             }
             else  if (who == "Orders")
             {
                 var order = (Orders)bsUser.Current;
                 ordersEdit1.Order = order;
+                if (dataGridView1.Columns.Contains("ServiceId"))
+                {
+                    dataGridView1.Columns["ServiceId"].Visible = false;
+                }
+
             }
             else if (who == "Services")
             {
                 var service = (Services)bsUser.Current;
                 sevicesEdit1.Service = service;
+                if (dataGridView1.Columns.Contains("ID"))
+                {
+                    dataGridView1.Columns["ID"].Visible = false;
+                }
             }
         }
 
         private void btnClients_Click(object sender, EventArgs e)
         {
             SwitchViews(true, false, false, "Clients");
+            
         }
 
         private void btnOrders_Click(object sender, EventArgs e)
@@ -121,6 +167,11 @@ namespace APM_PiKPO
             btnSaveClient.Visible = showClients;
             btnSaveOrder.Visible = showOrders;
             btnSaveService.Visible = showServices;
+            btnClientsSortByName.Visible = showClients;
+            btnSortClientsByDate.Visible = showClients;
+            btnSortByClients.Visible = showOrders;
+            btnSortByDate.Visible = showOrders;
+            btnSortByStatus.Visible = showOrders;
             this.who = who;
             refreshTable();
             _newRow = false;
@@ -138,7 +189,7 @@ namespace APM_PiKPO
 
         private void btnAddClient_Click(object sender, EventArgs e)
         {
-            clientsEdit1.Client = new Clients { Date = DateTime.Now.Date };
+            clientsEdit1.Client = new Clients { ProfileCreateDate = DateTime.Now.Date };
             _newRow = true;
         }
 
@@ -158,12 +209,12 @@ namespace APM_PiKPO
         {
             if (_newRow)
             {
-                repository.AddOrder(ordersEdit1.Order);
+                repository.addOrder(ordersEdit1.Order);
                 _newRow = false;
             }
             else
             {
-                repository.SaveOrder(ordersEdit1.Order);
+                repository.saveOrder(ordersEdit1.Order);
             }
             refreshTable();
         }
@@ -172,12 +223,12 @@ namespace APM_PiKPO
         {
             if (_newRow)
             {
-                repository.AddClient(clientsEdit1.Client);
+                repository.addClient(clientsEdit1.Client);
                 _newRow = false;
             }
             else
             {
-                repository.SaveClient(clientsEdit1.Client);
+                repository.saveClient(clientsEdit1.Client);
             }
             refreshTable();
             
@@ -187,32 +238,68 @@ namespace APM_PiKPO
         {
             if (_newRow)
             {
-                repository.AddService(sevicesEdit1.Service);
+                repository.addService(sevicesEdit1.Service);
                 _newRow = false;
             }
             else
             {
-                repository.SaveService(sevicesEdit1.Service);
+                repository.saveService(sevicesEdit1.Service);
             }
             refreshTable();
         }
 
         private void btnDelService_Click(object sender, EventArgs e)
         {
-            repository.DeleteService(id: sevicesEdit1.Service?.Id ?? 0);
+            repository.deleteService(id: sevicesEdit1.Service?.Id ?? 0);
             refreshTable();
         }
 
         private void btnDelOrder_Click(object sender, EventArgs e)
         {
-            repository.DeleteOrder(id: ordersEdit1.Order?.Id ?? 0);
+            repository.deleteOrder(id: ordersEdit1.Order?.ID ?? 0);
             refreshTable();
         }
 
         private void btnDelClient_Click(object sender, EventArgs e)
         {
-            repository.DeleteClient(id: clientsEdit1.Client?.Id ?? 0);
+            repository.deleteClient(id: clientsEdit1.Client?.ID ?? 0);
             refreshTable();
+        }
+        private void btnSortByClients_Click(object sender, EventArgs e)
+        {
+            if (sorting == "byNameUp")
+                sorting = "byNameDown";
+            else
+                sorting = "byNameUp";
+            refreshTable();
+        }
+
+        private void btnSortByDate_Click(object sender, EventArgs e)
+        {
+            if (sorting == "byDateDown")
+                sorting = "byDateUp";
+            else
+                sorting = "byDateDown";
+            refreshTable();
+        }
+
+        private void btnSortByStatus_Click(object sender, EventArgs e)
+        {
+            if (sorting == "byStatusUp")
+                sorting = "byStatusDown";
+            else
+                sorting = "byStatusUp";
+            refreshTable();
+        }
+
+        private void btnClients_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnOrders_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

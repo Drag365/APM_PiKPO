@@ -11,7 +11,7 @@ namespace APM_PiKPO.DAL
     public class RepositoryTablesImpl : IRepositoryTables
     {
 
-        override public List<Clients> GetClients()
+        override public List<Clients> getClients()
         {
             try
             {
@@ -35,12 +35,12 @@ namespace APM_PiKPO.DAL
                             {
                                 users.Add(new Clients
                                 {
-                                    Id = rdr.GetInt32(0),
-                                    Name = rdr.GetString(1),
+                                    ID = rdr.GetInt32(0),
+                                    FirstName = rdr.GetString(1),
                                     Surname = rdr.GetString(2),
                                     PhoneNumber = rdr.GetString(3),
                                     Mail = rdr.GetString(4),
-                                    Date = rdr.GetDateTime(5)
+                                    ProfileCreateDate = rdr.GetDateTime(5)
                                 });
                             }
                             return users;
@@ -52,20 +52,16 @@ namespace APM_PiKPO.DAL
             return null;
         }
 
-        override public List<Orders> GetOrders()
+        override public List<Orders> getOrders()
         {
             try
             {
                 using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
                 {
-
-                    using (var cmd = new SQLiteCommand(@"SELECT id,
-       clientId,
-       orderDate,
-       status,
-       totalAmount
-  FROM orders;
-", connection))
+                    using (var cmd = new SQLiteCommand(@"SELECT o.id, o.clientId, c.surname, c.name, o.serviceId, s.name, s.price, o.orderDate, o.status
+FROM orders o 
+JOIN clients c ON o.clientId = c.id
+JOIN services s ON o.serviceId = s.id;", connection))
                     {
                         connection.Open();
                         using (var rdr = cmd.ExecuteReader())
@@ -73,14 +69,17 @@ namespace APM_PiKPO.DAL
                             List<Orders> orders = new List<Orders>();
                             while (rdr.Read())
                             {
+                                string clientName = string.Format("{0} {1}", rdr.GetString(2), rdr.GetString(3));
                                 orders.Add(new Orders
                                 {
-                                    Id = rdr.GetInt32(0),
-                                    //CliendId = rdr.GetInt32(1),
-                                    Date = rdr.GetDateTime(2),
-                                    Status = rdr.GetString(3),
-                                    totalAmount = rdr.GetInt32(4),
-                                    
+                                    ID = rdr.GetInt32(0),
+                                    ClientId = rdr.GetInt32(1),
+                                    ClientName = clientName,
+                                    ServiceId = rdr.GetInt32(4),
+                                    ServiceName = rdr.GetString(5),
+                                    totalAmount = rdr.GetInt32(6),
+                                    Date = rdr.GetDateTime(7),
+                                    Status = rdr.GetString(8)
                                 });
                             }
                             return orders;
@@ -92,7 +91,7 @@ namespace APM_PiKPO.DAL
             return null;
         }
 
-        override public List<Services> GetServices()
+        override public List<Services> getServices()
         {
             try
             {
@@ -115,7 +114,7 @@ namespace APM_PiKPO.DAL
                                 services.Add(new Services
                                 {
                                     Id = rdr.GetInt32(0),
-                                    Name = rdr.GetString(1),
+                                    ServiceName = rdr.GetString(1),
                                     Description = rdr.GetString(2),
                                     Price = rdr.GetInt32(3),
 
@@ -130,7 +129,7 @@ namespace APM_PiKPO.DAL
             return null;
         }
 
-        override public bool AddClient(Clients client)
+        override public bool addClient(Clients client)
         {
             try
             {
@@ -144,11 +143,11 @@ namespace APM_PiKPO.DAL
                         date_created
                     )
                     VALUES (
-                        '{client.Name}',
+                        '{client.FirstName}',
                         '{client.Surname}',
                         '{client.PhoneNumber}',
                         '{client.Mail}',
-                        '{client.Date:yyyy-MM-dd}'
+                        '{client.ProfileCreateDate:yyyy-MM-dd}'
                     );", connection))
                     {
                         connection.Open();
@@ -161,7 +160,7 @@ namespace APM_PiKPO.DAL
             return false;
         }
 
-        override public bool DeleteClient(int id)
+        override public bool deleteClient(int id)
         {
             try
             {
@@ -180,7 +179,7 @@ namespace APM_PiKPO.DAL
             return false;
         }
 
-        override public bool SaveClient(Clients client)
+        override public bool saveClient(Clients client)
         {
             try
             {
@@ -189,12 +188,12 @@ namespace APM_PiKPO.DAL
                     
                     using (var cmd = new SQLiteCommand($@"UPDATE clients 
 SET
-name = '{client.Name}',
+name = '{client.FirstName}',
 surname = '{client.Surname}',
 PhoneNumber = '{client.PhoneNumber}',
 Mail = '{client.Mail}',
-date_created = '{client.Date:yyyy-MM-dd}'
-WHERE id = {client.Id};", connection))
+date_created = '{client.ProfileCreateDate:yyyy-MM-dd}'
+WHERE id = {client.ID};", connection))
                     {
                         connection.Open();
                         var res = cmd.ExecuteNonQuery();
@@ -206,7 +205,7 @@ WHERE id = {client.Id};", connection))
             return false;
         }
 
-        override public bool SaveOrder(Orders order)
+        override public bool saveOrder(Orders order)
         {
             try
             {
@@ -215,10 +214,12 @@ WHERE id = {client.Id};", connection))
 
                     using (var cmd = new SQLiteCommand($@"UPDATE orders 
 SET
+clientId = '{order.ClientId}',
+serviceId = '{order.ServiceId}',
 orderDate = '{order.Date:yyyy-MM-dd}',
 status = '{order.Status}',
 totalAmount = '{order.totalAmount}'
-WHERE id = {order.Id};", connection))
+WHERE id = {order.ID};", connection))
                     {
                         connection.Open();
                         var res = cmd.ExecuteNonQuery();
@@ -230,7 +231,31 @@ WHERE id = {order.Id};", connection))
             return false;
         }
 
-        override public bool AddOrder(Orders order)
+        override public bool saveService(Services service)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
+                {
+
+                    using (var cmd = new SQLiteCommand($@"UPDATE services 
+SET
+name = '{service.ServiceName}',
+description = '{service.Description}',
+price = '{service.Price}'
+WHERE id = {service.Id};", connection))
+                    {
+                        connection.Open();
+                        var res = cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
+            return false;
+        }
+
+        override public bool addOrder(Orders order)
         {
             try
             {
@@ -238,12 +263,14 @@ WHERE id = {order.Id};", connection))
                 {
                     using (var cmd = new SQLiteCommand($@"INSERT INTO orders (
                         clientId,
+                        serviceId,
                        orderDate,
                        status,
                        totalAmount
                     )
                     VALUES (
-                        '{order.Client}',
+                        '{order.ClientId}',
+                        '{order.ServiceId}',
                         '{order.Date:yyyy-MM-dd}',
                         '{order.Status}',
                         '{order.totalAmount}'
@@ -259,7 +286,7 @@ WHERE id = {order.Id};", connection))
             return false;
         }
 
-        override public bool DeleteOrder(int id)
+        override public bool deleteOrder(int id)
         {
             try
             {
@@ -279,31 +306,9 @@ WHERE id = {order.Id};", connection))
             return false;
         }
 
-        override public bool SaveService(Services service)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
-                {
+        
 
-                    using (var cmd = new SQLiteCommand($@"UPDATE services 
-SET
-Id = '{service.Id}',
-name = '{service.Name}',
-description = '{service.Description}',
-price = '{service.Price}'", connection))
-                    {
-                        connection.Open();
-                        var res = cmd.ExecuteNonQuery();
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex) { Console.WriteLine(ex.Message); }
-            return false;
-        }
-
-        override public bool AddService(Services service)
+        override public bool addService(Services service)
         {
             try
             {
@@ -315,7 +320,7 @@ price = '{service.Price}'", connection))
                          price
                      )
                     VALUES (
-                        '{service.Name}',
+                        '{service.ServiceName}',
                         '{service.Description}',
                         '{service.Price}'
                     );", connection))
@@ -330,7 +335,7 @@ price = '{service.Price}'", connection))
             return false;
         }
 
-        override public bool DeleteService(int id)
+        override public bool deleteService(int id)
         {
             try
             {

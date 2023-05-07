@@ -45,14 +45,23 @@ namespace APM_PiKPO.DAL
 
         [DisplayName("ID заказа")]
         [Browsable(false)]
-        public int Id { get; set; }
-        [DisplayName("Клиент")]
-        public string Client { get; set; }
+        public int ID { get; set; }
+        [DisplayName("Клиент Id")]
+        [Browsable(false)]
+        public int ClientId { get; set; }
+        [DisplayName("Имя клиента")]
+        public string ClientName { get; set; }
+        [DisplayName("ID Услуги")]
+        public int ServiceId { get; set; }
+        [DisplayName("Услуга")]
+        public string ServiceName { get; set; }
+        
+        [DisplayName("Итоговая стоимость")]
+        public int totalAmount { get; set; }
         [DisplayName("Дата заказа")]
         public DateTime Date { get; set; }
         [DisplayName("Статус")]
         public string Status { get; set; }
-        [DisplayName("Итоговая стоимость")]
-        public int totalAmount { get; set; }
+        
     }
 }
