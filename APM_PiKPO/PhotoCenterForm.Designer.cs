@@ -70,6 +70,7 @@ namespace APM_PiKPO
             this.label1 = new System.Windows.Forms.Label();
             this.cbClientFilter = new System.Windows.Forms.ComboBox();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -416,21 +417,17 @@ namespace APM_PiKPO
             // 
             // btnClients
             // 
-            this.btnClients.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
-            this.btnClients.FlatAppearance.BorderSize = 0;
-            this.btnClients.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClients.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnClients.ForeColor = System.Drawing.Color.White;
+            this.btnClients.AutoSize = true;
+            this.btnClients.Checked = true;
+            this.btnClients.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClients.Location = new System.Drawing.Point(13, 261);
             this.btnClients.Name = "btnClients";
-            this.btnSearch.Size = new System.Drawing.Size(194, 43);
+            this.btnClients.Size = new System.Drawing.Size(85, 23);
             this.btnClients.TabIndex = 7;
+            this.btnClients.TabStop = true;
             this.btnClients.Text = "Клиенты";
-            this.btnClients.UseVisualStyleBackColor = false;
+            this.btnClients.UseVisualStyleBackColor = true;
             this.btnClients.Click += new System.EventHandler(this.btnClients_Click);
-            // 
-            // 
-
             // 
             // clientsEdit1
             // 
@@ -463,6 +460,7 @@ namespace APM_PiKPO
             // panel7
             // 
             this.panel7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.panel7.Controls.Add(this.button1);
             this.panel7.Controls.Add(this.label1);
             this.panel7.Controls.Add(this.cbClientFilter);
             this.panel7.Controls.Add(this.btnSearch);
@@ -491,18 +489,33 @@ namespace APM_PiKPO
             // 
             // btnSearch
             // 
-            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(0,102,204);
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(102)))), ((int)(((byte)(204)))));
             this.btnSearch.FlatAppearance.BorderSize = 0;
             this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnSearch.ForeColor = System.Drawing.Color.White;
-            this.btnSearch.Location = new System.Drawing.Point(160, 53);
+            this.btnSearch.Location = new System.Drawing.Point(160, 51);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(194, 43);
             this.btnSearch.TabIndex = 1;
             this.btnSearch.Text = "Показать клиентов";
             this.btnSearch.UseVisualStyleBackColor = false;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(102)))), ((int)(((byte)(204)))));
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(49, 112);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(145, 33);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Добавить клиента";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.btnAddClient_Click);
             // 
             // PhotoCenterForm
             // 
@@ -568,6 +581,7 @@ namespace APM_PiKPO
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.ComboBox cbClientFilter;
         private System.Windows.Forms.Label label1;
+        private Button button1;
     }
 }
 
