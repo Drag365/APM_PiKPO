@@ -1,4 +1,6 @@
 ﻿using APM_PiKPO.DAL;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace APM_PiKPO
 {
@@ -64,6 +66,10 @@ namespace APM_PiKPO
             this.clientsEdit1 = new APM_PiKPO.ClientsEdit();
             this.ordersEdit1 = new APM_PiKPO.OrdersEdit();
             this.sevicesEdit1 = new APM_PiKPO.TablesEditors.ServicesEdit();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbClientFilter = new System.Windows.Forms.ComboBox();
+            this.btnSearch = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -75,6 +81,7 @@ namespace APM_PiKPO
             this.panel6.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -360,6 +367,7 @@ namespace APM_PiKPO
             this.tableLayoutPanel3.ColumnCount = 1;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this.panel1, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.panel7, 0, 1);
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 2;
@@ -392,6 +400,7 @@ namespace APM_PiKPO
             this.btnServices.TabIndex = 9;
             this.btnServices.Text = "Услуги";
             this.btnServices.UseVisualStyleBackColor = true;
+            this.btnServices.Click += new System.EventHandler(this.btnServices_CheckedChanged);
             // 
             // btnOrders
             // 
@@ -403,19 +412,25 @@ namespace APM_PiKPO
             this.btnOrders.TabIndex = 8;
             this.btnOrders.Text = "Заказы";
             this.btnOrders.UseVisualStyleBackColor = true;
+            this.btnOrders.Click += new System.EventHandler(this.btnOrders_Click);
             // 
             // btnClients
             // 
-            this.btnClients.AutoSize = true;
-            this.btnClients.Checked = true;
-            this.btnClients.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClients.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnClients.FlatAppearance.BorderSize = 0;
+            this.btnClients.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClients.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnClients.ForeColor = System.Drawing.Color.White;
             this.btnClients.Location = new System.Drawing.Point(13, 261);
             this.btnClients.Name = "btnClients";
-            this.btnClients.Size = new System.Drawing.Size(85, 23);
+            this.btnSearch.Size = new System.Drawing.Size(194, 43);
             this.btnClients.TabIndex = 7;
-            this.btnClients.TabStop = true;
             this.btnClients.Text = "Клиенты";
-            this.btnClients.UseVisualStyleBackColor = true;
+            this.btnClients.UseVisualStyleBackColor = false;
+            this.btnClients.Click += new System.EventHandler(this.btnClients_Click);
+            // 
+            // 
+
             // 
             // clientsEdit1
             // 
@@ -445,6 +460,50 @@ namespace APM_PiKPO
             this.sevicesEdit1.TabIndex = 10;
             this.sevicesEdit1.Visible = false;
             // 
+            // panel7
+            // 
+            this.panel7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.panel7.Controls.Add(this.label1);
+            this.panel7.Controls.Add(this.cbClientFilter);
+            this.panel7.Controls.Add(this.btnSearch);
+            this.panel7.Location = new System.Drawing.Point(3, 303);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(366, 193);
+            this.panel7.TabIndex = 6;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(57, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Клиент";
+            // 
+            // cbClientFilter
+            // 
+            this.cbClientFilter.FormattingEnabled = true;
+            this.cbClientFilter.ImeMode = System.Windows.Forms.ImeMode.On;
+            this.cbClientFilter.Location = new System.Drawing.Point(107, 14);
+            this.cbClientFilter.Name = "cbClientFilter";
+            this.cbClientFilter.Size = new System.Drawing.Size(247, 21);
+            this.cbClientFilter.TabIndex = 2;
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(0,102,204);
+            this.btnSearch.FlatAppearance.BorderSize = 0;
+            this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnSearch.ForeColor = System.Drawing.Color.White;
+            this.btnSearch.Location = new System.Drawing.Point(160, 53);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(194, 43);
+            this.btnSearch.TabIndex = 1;
+            this.btnSearch.Text = "Показать клиентов";
+            this.btnSearch.UseVisualStyleBackColor = false;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
             // PhotoCenterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -465,6 +524,8 @@ namespace APM_PiKPO
             this.tableLayoutPanel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -503,6 +564,10 @@ namespace APM_PiKPO
         private ClientsEdit clientsEdit1;
         private OrdersEdit ordersEdit1;
         private TablesEditors.ServicesEdit sevicesEdit1;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.ComboBox cbClientFilter;
+        private System.Windows.Forms.Label label1;
     }
 }
 

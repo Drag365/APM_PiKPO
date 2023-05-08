@@ -429,7 +429,45 @@ JOIN services s ON o.serviceId = s.id ORDER BY o.status DESC;", connection))
             return null;
         }
 
-
+        override public List<Orders> getFilterOrdersByClient(string ID)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
+                {
+                    using (var cmd = new SQLiteCommand($@"SELECT o.id, o.clientId, c.surname, c.name, o.serviceId, s.name, s.price, o.orderDate, o.status
+FROM orders o 
+JOIN clients c ON o.clientId = c.id
+JOIN services s ON o.serviceId = s.id WHERE clientId = {ID};
+", connection))
+                    {
+                        connection.Open();
+                        using (var rdr = cmd.ExecuteReader())
+                        {
+                            List<Orders> orders = new List<Orders>();
+                            while (rdr.Read())
+                            {
+                                string clientName = string.Format("{0} {1}", rdr.GetString(2), rdr.GetString(3));
+                                orders.Add(new Orders
+                                {
+                                    ID = rdr.GetInt32(0),
+                                    ClientId = rdr.GetInt32(1),
+                                    ClientName = clientName,
+                                    ServiceId = rdr.GetInt32(4),
+                                    ServiceName = rdr.GetString(5),
+                                    totalAmount = rdr.GetInt32(6),
+                                    Date = rdr.GetDateTime(7),
+                                    Status = rdr.GetString(8)
+                                });
+                            }
+                            return orders;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
+            return null;
+        }
 
     }
 }

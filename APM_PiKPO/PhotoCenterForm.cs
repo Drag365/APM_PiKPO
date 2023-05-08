@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace APM_PiKPO
         private bool _newRow;
         private string who;
         string sorting = "No";
-
+        string idSearchKey = "";
         public PhotoCenterForm()
         {
             InitializeComponent();
@@ -48,7 +49,9 @@ namespace APM_PiKPO
 
         private void refreshTable()
         {
-            
+            cbClientFilter.DataSource = repository.getClients();
+            cbClientFilter.DisplayMember = "FullName";
+            cbClientFilter.ValueMember = "ID";
             if (who == "Clients")
             {
                 _clientsList.Clear();
@@ -79,6 +82,11 @@ namespace APM_PiKPO
                     list = repository.getOrders();
                     _ordersList.AddRange(list);
                 }
+                else if (sorting == "ID")
+                {
+                    list = clientSorter.getFilterOrdersByClient(idSearchKey);
+                    _ordersList.AddRange(list);
+                }
                 else
                 {
                     var sortingFunction = clientSorter._ordersSortingFunctions[sorting];
@@ -99,7 +107,6 @@ namespace APM_PiKPO
             }
 
         }
-
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (who == "Clients")
@@ -139,12 +146,14 @@ namespace APM_PiKPO
 
         private void btnClients_Click(object sender, EventArgs e)
         {
+            sorting = "byNameUp";
             SwitchViews(true, false, false, "Clients");
             
         }
 
         private void btnOrders_Click(object sender, EventArgs e)
         {
+            sorting = "byNameUp";
             SwitchViews(false, true, false, "Orders");
         }
 
@@ -172,6 +181,9 @@ namespace APM_PiKPO
             btnSortByClients.Visible = showOrders;
             btnSortByDate.Visible = showOrders;
             btnSortByStatus.Visible = showOrders;
+            btnSearch.Visible = showOrders;
+            cbClientFilter.Visible = showOrders;
+            label1.Visible = showOrders;
             this.who = who;
             refreshTable();
             _newRow = false;
@@ -300,6 +312,13 @@ namespace APM_PiKPO
         private void btnOrders_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            sorting = "ID";
+            idSearchKey = cbClientFilter.SelectedValue.ToString();
+            refreshTable();
         }
     }
 }

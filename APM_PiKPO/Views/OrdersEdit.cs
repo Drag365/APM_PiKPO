@@ -34,7 +34,7 @@ namespace APM_PiKPO
 
                 cbService.DataBindings.Clear();
                 cbService.DataSource = repository.getServices();
-                cbService.DisplayMember = "Name";
+                cbService.DisplayMember = "ServiceName";
                 cbService.ValueMember = "Id";
                 cbService.DataBindings.Add("SelectedValue", order, "ServiceId");
 

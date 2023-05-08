@@ -23,5 +23,7 @@ namespace APM_PiKPO.Сontroller
 
         public abstract List<Clients> getSortedClientsByDateUp();
         public abstract List<Clients> getSortedClientsByDateDown();
+
+        public abstract List<Orders> getFilterOrdersByClient(string ID);
     }
 }
