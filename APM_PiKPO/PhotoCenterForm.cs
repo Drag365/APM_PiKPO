@@ -177,12 +177,13 @@ namespace APM_PiKPO
             btnSaveOrder.Visible = showOrders;
             btnSaveService.Visible = showServices;
             btnClientsSortByName.Visible = showClients;
-            btnSortClientsByDate.Visible = showClients;
+            btnSortByDate.Visible = showClients;
             btnSortByClients.Visible = showOrders;
             btnSortByDate.Visible = showOrders;
             btnSortByStatus.Visible = showOrders;
             btnSearch.Visible = showOrders;
             cbClientFilter.Visible = showOrders;
+            btnShowAll.Visible = showOrders;
             label1.Visible = showOrders;
             this.who = who;
             refreshTable();
@@ -195,8 +196,13 @@ namespace APM_PiKPO
             {
                 column.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }
-            dataGridView1.AutoResizeRows();
-            dataGridView1.AutoResizeColumns();
+            for (int i = 0; i < 3; i++)
+            {
+                dataGridView1.AutoResizeRows();
+                dataGridView1.AutoResizeColumns();
+                dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            }
         }
 
         private void btnAddClient_Click(object sender, EventArgs e)
