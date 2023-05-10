@@ -1,4 +1,5 @@
 ﻿using APM_PiKPO.DAL;
+using APM_PiKPO.Сontroller;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,26 +15,26 @@ namespace APM_PiKPO
     public partial class OrdersEdit : UserControl
     {
         private Orders order;
-        RepositoryTablesImpl repository;
+        IRepositoryService repositoryService;
         public Orders Order { get => order; set { order = value; bind(); } }
 
         public OrdersEdit()
         {
             InitializeComponent();
-            repository = new RepositoryTablesImpl();
+            repositoryService = new RepositoryServiceImpl();
         }
         private void bind()
         {
             if (order != null)
             {
                 cbClients.DataBindings.Clear();
-                cbClients.DataSource = repository.getClients();
+                cbClients.DataSource = repositoryService.getSortedClientsByNameUp();
                 cbClients.DisplayMember = "FullName";
                 cbClients.ValueMember = "ID";
                 cbClients.DataBindings.Add("SelectedValue", order, "ClientId");
 
                 cbService.DataBindings.Clear();
-                cbService.DataSource = repository.getServices();
+                cbService.DataSource = repositoryService.getSortedServicesByNameUp();
                 cbService.DisplayMember = "ServiceName";
                 cbService.ValueMember = "Id";
                 cbService.DataBindings.Add("SelectedValue", order, "ServiceId");
@@ -65,6 +66,10 @@ namespace APM_PiKPO
             }
         }
 
+        public string getSelectedClientNumber()
+        {
+            return repositoryService.getClientNumber(order.ClientId.ToString());
+        }
         private void label2_Click(object sender, EventArgs e)
         {
 

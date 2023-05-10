@@ -8,32 +8,8 @@ using System.Threading.Tasks;
 
 namespace APM_PiKPO.Сontroller
 {
-    public class ClientSorterImpl : ICLientSorter
+    public class RepositoryServiceImpl : IRepositoryService
     {
-
-        public Dictionary<string, Func<List<Orders>>> _ordersSortingFunctions;
-        public Dictionary<string, Func<List<Clients>>> _clientsSortingFunctions;
-
-        public ClientSorterImpl()
-        {
-            _ordersSortingFunctions = new Dictionary<string, Func<List<Orders>>>
-            {
-                {"byNameUp", getSortedOrdersByNameUp},
-                {"byNameDown", getSortedOrdersByNameDown},
-                {"byDateUp", getSortedOrdersByDateUp},
-                {"byDateDown", getSortedOrdersByDateDown},
-                {"byStatusUp", getSortedOrdersByStatusUp},
-                {"byStatusDown", getSortedOrdersByStatusDown},
-            };
-
-            _clientsSortingFunctions = new Dictionary<string, Func<List<Clients>>>
-            {
-                {"byNameUp", getSortedClientsByNameUp},
-                {"byNameDown", getSortedClientsByNameDown},
-                {"byDateUp", getSortedClientsByDateUp},
-                {"byDateDown", getSortedClientsByDateDown},
-            };
-        }
         override public List<Orders> getSortedOrdersByNameUp()
         {
             try
@@ -469,5 +445,72 @@ JOIN services s ON o.serviceId = s.id WHERE clientId = {ID};
             return null;
         }
 
+        override public List<Services> getSortedServicesByNameUp()
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
+                {
+
+                    using (var cmd = new SQLiteCommand(@"SELECT Id,
+       name,
+       description,
+       price
+  FROM services ORDER BY name DESC;", connection))
+                    {
+                        connection.Open();
+                        using (var rdr = cmd.ExecuteReader())
+                        {
+                            List<Services> services = new List<Services>();
+                            while (rdr.Read())
+                            {
+                                services.Add(new Services
+                                {
+                                    Id = rdr.GetInt32(0),
+                                    ServiceName = rdr.GetString(1),
+                                    Description = rdr.GetString(2),
+                                    Price = rdr.GetInt32(3),
+
+                                });
+                            }
+                            return services;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
+            return null;
+        }
+
+        override public string getClientNumber(string ID)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
+                {
+                    using (var cmd = new SQLiteCommand($@"SELECT name,
+       surname,
+       PhoneNumber
+  FROM clients WHERE id = {ID};
+
+;
+", connection))
+                    {
+                        connection.Open();
+                        using (var rdr = cmd.ExecuteReader())
+                        {
+                            string clientsData = "";
+                            while (rdr.Read())
+                            {
+                                clientsData = rdr.GetString(2) + " клиенту " + rdr.GetString(1) + " " + rdr.GetString(0);
+                            }
+                            return clientsData;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
+            return null;
+        }
     }
 }

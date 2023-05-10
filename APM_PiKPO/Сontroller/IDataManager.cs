@@ -8,15 +8,8 @@ using System.Threading.Tasks;
 
 namespace APM_PiKPO.Repository
 {
-    public abstract class IRepositoryTables
+    public abstract class IDataManager
     {
-        public abstract List<Clients> getClients();
-
-        public abstract List<Orders> getOrders();
-
-
-        public abstract List<Services> getServices();
-
 
         public abstract bool addClient(Clients client);
 
@@ -43,5 +36,6 @@ namespace APM_PiKPO.Repository
 
 
         public abstract bool saveService(Services service);
+
     }
 }

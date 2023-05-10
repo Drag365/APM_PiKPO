@@ -21,11 +21,11 @@ namespace APM_PiKPO
         private List<Clients> _clientsList;
         private List<Orders> _ordersList;
         private List<Services> _servicesList;
-        RepositoryTablesImpl repository;
-        ClientSorterImpl clientSorter;
+        IDataManager dataManager;
+        IRepositoryService repositoryService;
         private bool _newRow;
         private string who;
-        string sorting = "No";
+        string sorting = "byNameUp";
         string idSearchKey = "";
         public PhotoCenterForm()
         {
@@ -34,8 +34,8 @@ namespace APM_PiKPO
             _clientsList = new List<Clients>();
             _ordersList = new List<Orders>();
             _servicesList = new List<Services>();
-            repository = new RepositoryTablesImpl();
-            clientSorter = new ClientSorterImpl();
+            dataManager = new DataManagerImpl();
+            repositoryService = new RepositoryServiceImpl();
             bsUser.DataSource = _clientsList;
             dataGridView1.AutoGenerateColumns = true;
             clientsEdit1.Client = new Clients { ProfileCreateDate = DateTime.Now.Date };
@@ -49,47 +49,31 @@ namespace APM_PiKPO
 
         private void refreshTable()
         {
-            cbClientFilter.DataSource = repository.getClients();
+            cbClientFilter.DataSource = repositoryService.getSortedClientsByNameUp();
             cbClientFilter.DisplayMember = "FullName";
             cbClientFilter.ValueMember = "ID";
             if (who == "Clients")
             {
                 _clientsList.Clear();
                 bsUser.DataSource = _clientsList;
-                List<Clients> list;
-                if (sorting == "No")
-                {
-                    list = repository.getClients();
-                    _clientsList.AddRange(list);
-                }
-                else
-                {
-                    var sortingFunction = clientSorter._clientsSortingFunctions[sorting];
-                    list = sortingFunction();
-                    _clientsList.AddRange(list);
-                }
+                var sortingFunction = repositoryService._clientsSortingFunctions[sorting];
+                List<Clients> list = sortingFunction();
+                _clientsList.AddRange(list);
                 bsUser.ResetBindings(false);
-                
-
             }
             else if (who == "Orders")
             {
                 _ordersList.Clear();
                 bsUser.DataSource = _ordersList;
                 List<Orders> list;
-                if (sorting == "No")
+                if (sorting == "ID")
                 {
-                    list = repository.getOrders();
-                    _ordersList.AddRange(list);
-                }
-                else if (sorting == "ID")
-                {
-                    list = clientSorter.getFilterOrdersByClient(idSearchKey);
+                    list = repositoryService.getFilterOrdersByClient(idSearchKey);
                     _ordersList.AddRange(list);
                 }
                 else
                 {
-                    var sortingFunction = clientSorter._ordersSortingFunctions[sorting];
+                    var sortingFunction = repositoryService._ordersSortingFunctions[sorting];
                     list = sortingFunction();
                     _ordersList.AddRange(list);
                 }
@@ -101,7 +85,7 @@ namespace APM_PiKPO
             {
                 _servicesList.Clear();
                 bsUser.DataSource = _servicesList;
-                List<Services> list = repository.getServices();
+                List<Services> list = repositoryService.getSortedServicesByNameUp();
                 _servicesList.AddRange(list);
                 bsUser.ResetBindings(false);
             }
@@ -179,12 +163,13 @@ namespace APM_PiKPO
             btnClientsSortByName.Visible = showClients;
             btnSortByDate.Visible = showClients;
             btnSortByClients.Visible = showOrders;
-            btnSortByDate.Visible = showOrders;
+            btnSortByDate.Visible = showOrders || showClients;
             btnSortByStatus.Visible = showOrders;
             btnSearch.Visible = showOrders;
             cbClientFilter.Visible = showOrders;
             btnShowAll.Visible = showOrders;
             label1.Visible = showOrders;
+            btnStatusNotiffication.Visible = showOrders;
             this.who = who;
             refreshTable();
             _newRow = false;
@@ -227,12 +212,12 @@ namespace APM_PiKPO
         {
             if (_newRow)
             {
-                repository.addOrder(ordersEdit1.Order);
+                dataManager.addOrder(ordersEdit1.Order);
                 _newRow = false;
             }
             else
             {
-                repository.saveOrder(ordersEdit1.Order);
+                dataManager.saveOrder(ordersEdit1.Order);
             }
             refreshTable();
         }
@@ -241,46 +226,45 @@ namespace APM_PiKPO
         {
             if (_newRow)
             {
-                repository.addClient(clientsEdit1.Client);
+                dataManager.addClient(clientsEdit1.Client);
                 _newRow = false;
             }
             else
             {
-                repository.saveClient(clientsEdit1.Client);
+                dataManager.saveClient(clientsEdit1.Client);
             }
             refreshTable();
-            
         }
 
         private void btnSaveService_Click(object sender, EventArgs e)
         {
             if (_newRow)
             {
-                repository.addService(sevicesEdit1.Service);
+                dataManager.addService(sevicesEdit1.Service);
                 _newRow = false;
             }
             else
             {
-                repository.saveService(sevicesEdit1.Service);
+                dataManager.saveService(sevicesEdit1.Service);
             }
             refreshTable();
         }
 
         private void btnDelService_Click(object sender, EventArgs e)
         {
-            repository.deleteService(id: sevicesEdit1.Service?.Id ?? 0);
+            dataManager.deleteService(id: sevicesEdit1.Service?.Id ?? 0);
             refreshTable();
         }
 
         private void btnDelOrder_Click(object sender, EventArgs e)
         {
-            repository.deleteOrder(id: ordersEdit1.Order?.ID ?? 0);
+            dataManager.deleteOrder(id: ordersEdit1.Order?.ID ?? 0);
             refreshTable();
         }
 
         private void btnDelClient_Click(object sender, EventArgs e)
         {
-            repository.deleteClient(id: clientsEdit1.Client?.ID ?? 0);
+            dataManager.deleteClient(id: clientsEdit1.Client?.ID ?? 0);
             refreshTable();
         }
         private void btnSortByClients_Click(object sender, EventArgs e)
@@ -310,21 +294,17 @@ namespace APM_PiKPO
             refreshTable();
         }
 
-        private void btnClients_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnOrders_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             sorting = "ID";
             idSearchKey = cbClientFilter.SelectedValue.ToString();
             refreshTable();
+        }
+
+        private void btnStatusNotiffication_Click(object sender, EventArgs e)
+        {
+            string message = ordersEdit1.getSelectedClientNumber();
+            MessageBox.Show("Сообщение о готовности заказа отправлено на номер " + message);
         }
     }
 }

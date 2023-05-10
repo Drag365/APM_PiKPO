@@ -8,127 +8,8 @@ using System.Threading.Tasks;
 
 namespace APM_PiKPO.DAL
 {
-    public class RepositoryTablesImpl : IRepositoryTables
+    public class DataManagerImpl : IDataManager
     {
-
-        override public List<Clients> getClients()
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
-                {
-                    
-                    using (var cmd = new SQLiteCommand(@"SELECT id,
-       name,
-       surname,
-       PhoneNumber,
-       Mail,
-       date_created
-  FROM clients;
-", connection))
-                    {
-                        connection.Open();
-                        using (var rdr = cmd.ExecuteReader())
-                        {
-                            List<Clients> users = new List<Clients>();
-                            while(rdr.Read())
-                            {
-                                users.Add(new Clients
-                                {
-                                    ID = rdr.GetInt32(0),
-                                    FirstName = rdr.GetString(1),
-                                    Surname = rdr.GetString(2),
-                                    PhoneNumber = rdr.GetString(3),
-                                    Mail = rdr.GetString(4),
-                                    ProfileCreateDate = rdr.GetDateTime(5)
-                                });
-                            }
-                            return users;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) { Console.WriteLine(ex.Message); }
-            return null;
-        }
-
-        override public List<Orders> getOrders()
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
-                {
-                    using (var cmd = new SQLiteCommand(@"SELECT o.id, o.clientId, c.surname, c.name, o.serviceId, s.name, s.price, o.orderDate, o.status
-FROM orders o 
-JOIN clients c ON o.clientId = c.id
-JOIN services s ON o.serviceId = s.id;", connection))
-                    {
-                        connection.Open();
-                        using (var rdr = cmd.ExecuteReader())
-                        {
-                            List<Orders> orders = new List<Orders>();
-                            while (rdr.Read())
-                            {
-                                string clientName = string.Format("{0} {1}", rdr.GetString(2), rdr.GetString(3));
-                                orders.Add(new Orders
-                                {
-                                    ID = rdr.GetInt32(0),
-                                    ClientId = rdr.GetInt32(1),
-                                    ClientName = clientName,
-                                    ServiceId = rdr.GetInt32(4),
-                                    ServiceName = rdr.GetString(5),
-                                    totalAmount = rdr.GetInt32(6),
-                                    Date = rdr.GetDateTime(7),
-                                    Status = rdr.GetString(8)
-                                });
-                            }
-                            return orders;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) { Console.WriteLine(ex.Message); }
-            return null;
-        }
-
-        override public List<Services> getServices()
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(@"Data Source=PhotoCenter.sqlite;Version=3;"))
-                {
-
-                    using (var cmd = new SQLiteCommand(@"SELECT Id,
-       name,
-       description,
-       price
-  FROM services;
-", connection))
-                    {
-                        connection.Open();
-                        using (var rdr = cmd.ExecuteReader())
-                        {
-                            List<Services> services = new List<Services>();
-                            while (rdr.Read())
-                            {
-                                services.Add(new Services
-                                {
-                                    Id = rdr.GetInt32(0),
-                                    ServiceName = rdr.GetString(1),
-                                    Description = rdr.GetString(2),
-                                    Price = rdr.GetInt32(3),
-
-                                });
-                            }
-                            return services;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) { Console.WriteLine(ex.Message); }
-            return null;
-        }
-
         override public bool addClient(Clients client)
         {
             try
@@ -354,6 +235,8 @@ WHERE id = {service.Id};", connection))
             catch (Exception ex) { Console.WriteLine(ex.Message); }
             return false;
         }
+
+        
     }
 
     
